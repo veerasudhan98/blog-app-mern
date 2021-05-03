@@ -12,7 +12,8 @@ const mongoose = require("mongoose");
 //Database connection
 mongoose
   .connect(
-    "mongodb+srv://karthik-blog-app:karthik@98@cluster0.dud0j.mongodb.net/test",
+    process.env.MONGODB_URL ||
+      "mongodb+srv://karthik-blog-app:karthik@98@cluster0.dud0j.mongodb.net/test",
     { useNewUrlParser: true, useUnifiedTopology: true, useMongoClient: true }
   )
   .then(() => console.log("Database connected"))
@@ -24,6 +25,10 @@ app.use(bodyParser.json({ type: "*/*" })); // middleware for helping parse incom
 
 // Router Setup
 router(app);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("../client/build"));
+}
 
 // Server Setup
 const port = process.env.PORT || 3090;
